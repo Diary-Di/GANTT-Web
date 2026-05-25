@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diagramme de Gantt</title>
+  <link rel="stylesheet" href="/static/styles.css"/>
+</head>
+<body>
+
+  
+  <div class="container">
+    <h1>Planificateur de tâches</h1>
+
+    <section class="form-section">
+      <h2>Ajouter une tâche</h2>
+
+      <form id="taskForm">
+        <div class="form-grid">
+
+          <!-- Nom de la tâche -->
+          <div class="form-col">
+            <label for="taskName">Nom de la tâche</label>
+            <input
+              type="text"
+              id="taskName"
+              name="taskName"
+              placeholder="Ex : Conception..."
+              required
+            />
+          </div>
+
+          <!-- Durée -->
+          <div class="form-col form-col--small">
+            <label for="taskDuration">Durée (jours)</label>
+            <input
+              type="number"
+              id="taskDuration"
+              name="taskDuration"
+              min="1"
+              placeholder="Ex : 5"
+              required
+            />
+          </div>
+
+          <!-- Type de relation -->
+          <div class="form-col form-col--small">
+            <label>Type de relation</label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="relationType" value="predecesseur" checked />
+                Prédécesseur
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="relationType" value="successeur" />
+                Successeur
+              </label>
+            </div>
+          </div>
+
+          <!-- Tâche liée -->
+          <div class="form-col">
+            <label for="relatedTask" id="relatedTaskLabel">Tâche prédécesseur</label>
+            <input
+              type="text"
+              id="relatedTask"
+              name="relatedTask"
+              placeholder="Tâche liée (optionnel)"
+            />
+          </div>
+
+          <!-- Bouton -->
+          <div class="form-col form-col--btn">
+            <label>&nbsp;</label>
+            <button type="submit">+ Ajouter</button>
+          </div>
+
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
