@@ -8,75 +8,58 @@
 </head>
 <body>
 
-  
   <div class="container">
     <h1>Planificateur de tâches</h1>
 
     <section class="form-section">
       <h2>Ajouter une tâche</h2>
 
-      <form id="taskForm">
-        <div class="form-grid">
+      <!-- Grille partagée : formulaire + lignes de tâches -->
+      <div class="task-grid">
 
-          <!-- Nom de la tâche -->
-          <div class="form-col">
-            <label for="taskName">Nom de la tâche</label>
-            <input
-              type="text"
-              id="taskName"
-              name="taskName"
-              placeholder="Ex : Conception..."
-              required
-            />
+        <!-- Ligne formulaire -->
+        <div class="task-row task-row--form" id="taskForm">
+
+          <div class="task-cell">
+            <label for="taskName">Tâche</label>
+            <input type="text" id="taskName" placeholder="Nom de la tâche" required />
           </div>
 
-          <!-- Durée -->
-          <div class="form-col form-col--small">
+          <div class="task-cell">
             <label for="taskDuration">Durée (jours)</label>
-            <input
-              type="number"
-              id="taskDuration"
-              name="taskDuration"
-              min="1"
-              placeholder="Ex : 5"
-              required
-            />
+            <input type="number" id="taskDuration" min="1" placeholder="Ex : 5" required />
           </div>
 
-          <!-- Type de relation -->
-          <div class="form-col form-col--small">
-            <label>Type de relation</label>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="relationType" value="predecesseur" checked />
-                Prédécesseur
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="relationType" value="successeur" />
-                Successeur
-              </label>
-            </div>
+          <div class="task-cell">
+            <label for="predecessors">
+              Tâche(s) prédécesseur(s)
+              <span class="optional">facultatif</span>
+            </label>
+            <input type="text" id="predecessors" placeholder="Ex : Conception" />
           </div>
 
-          <!-- Tâche liée -->
-          <div class="form-col">
-            <label for="relatedTask" id="relatedTaskLabel">Tâche prédécesseur</label>
-            <input
-              type="text"
-              id="relatedTask"
-              name="relatedTask"
-              placeholder="Tâche liée (optionnel)"
-            />
+          <div class="task-cell">
+            <label for="successors">
+              Tâche(s) successeur(s)
+              <span class="optional">facultatif</span>
+            </label>
+            <input type="text" id="successors" placeholder="Ex : Tests" />
           </div>
 
-          <!-- Bouton -->
-          <div class="form-col form-col--btn">
+          <div class="task-cell task-cell--actions">
             <label>&nbsp;</label>
-            <button type="submit">+ Ajouter</button>
+            <button id="submitBtn" onclick="submitTask()">+ Ajouter</button>
           </div>
 
         </div>
-      </form>
+
+        <!-- Séparateur entre formulaire et tâches -->
+        <div class="grid-divider hidden" id="gridDivider"></div>
+
+        <!-- Les lignes de tâches s'insèrent ici -->
+        <div id="taskList"></div>
+
+      </div>
     </section>
   </div>
 

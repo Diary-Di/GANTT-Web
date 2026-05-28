@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -22,7 +22,7 @@ h1 {
   color: #1a252f;
 }
 
-/* --- Section formulaire --- */
+/* --- Section --- */
 .form-section {
   background: #ffffff;
   border-radius: 10px;
@@ -38,49 +38,93 @@ h2 {
   padding: 0.75rem 1.5rem;
 }
 
-/* --- Grille principale : tous les champs côte à côte --- */
-.form-grid {
-  display: flex;
-  align-items: flex-end;
-  gap: 0;
-  padding: 1rem 1.5rem 1.25rem;
-  border-bottom: 1px solid #dce3ea;
-}
-
-/* --- Colonne générique --- */
-.form-col {
+/* ================================================
+   GRILLE PARTAGÉE
+   Formulaire et lignes de tâches utilisent
+   exactement les mêmes colonnes.
+================================================ */
+.task-grid {
   display: flex;
   flex-direction: column;
-  flex: 2;
-  padding: 0 0.6rem;
+}
+
+.task-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr 2fr 180px;
+  align-items: end;
+  padding: 0.75rem 1.5rem;
+}
+
+/* Ligne formulaire */
+.task-row--form {
+  padding-bottom: 1rem;
+}
+
+/* Ligne de données */
+.task-row--data {
+  align-items: center;
+  border-top: 1px solid #eef1f4;
+  transition: background 0.15s;
+}
+
+.task-row--data:hover {
+  background-color: #f5faff;
+}
+
+/* --- Cellule --- */
+.task-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0 0.75rem;
   border-right: 1px solid #dce3ea;
 }
 
-.form-col:first-child {
+.task-cell:first-child {
   padding-left: 0;
 }
 
-/* Colonnes plus étroites */
-.form-col--small {
-  flex: 1;
-}
-
-/* Colonne bouton */
-.form-col--btn {
-  flex: 0 0 auto;
+.task-cell--actions {
   border-right: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
   padding-right: 0;
 }
 
 /* --- Labels --- */
-.form-col label {
-  font-size: 0.78rem;
+.task-cell label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #7f8c9a;
-  margin-bottom: 0.4rem;
   white-space: nowrap;
+}
+
+.optional {
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #fff;
+  background-color: #b0bec5;
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* --- Valeurs affichées dans les lignes --- */
+.task-row--data .task-cell span {
+  font-size: 0.9rem;
+  color: #2c3e50;
+  padding: 0.1rem 0;
+}
+
+.empty {
+  color: #b0bec5 !important;
 }
 
 /* --- Inputs --- */
@@ -103,33 +147,12 @@ input[type="number"]:focus {
   box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.12);
 }
 
-/* --- Groupe de radios --- */
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  padding: 0.4rem 0;
-}
-
-.radio-label {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.88rem;
-  font-weight: normal;
-  text-transform: none;
-  letter-spacing: 0;
-  color: #2c3e50;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-/* --- Bouton --- */
-button[type="submit"] {
-  padding: 0.55rem 1.2rem;
+/* --- Bouton Ajouter / Enregistrer --- */
+#submitBtn {
+  padding: 0.5rem 1rem;
   background-color: #2980b9;
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   border: none;
   border-radius: 6px;
@@ -138,6 +161,49 @@ button[type="submit"] {
   transition: background-color 0.2s;
 }
 
-button[type="submit"]:hover {
+#submitBtn:hover {
   background-color: #1f6391;
+}
+
+/* --- Boutons actions --- */
+.btn-edit,
+.btn-delete {
+  padding: 0.3rem 0.7rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-edit {
+  color: #2980b9;
+  background: #eaf3fb;
+  border: 1px solid #aed6f1;
+}
+
+.btn-edit:hover {
+  background: #aed6f1;
+}
+
+.btn-delete {
+  color: #e74c3c;
+  background: #fdecea;
+  border: 1px solid #f5b7b1;
+}
+
+.btn-delete:hover {
+  background: #f5b7b1;
+}
+
+/* --- Séparateur entre formulaire et tâches --- */
+.grid-divider {
+  height: 3px;
+  background: linear-gradient(to right, #2980b9, #aed6f1);
+  margin: 0 1.5rem;
+}
+
+.hidden {
+  display: none;
 }
