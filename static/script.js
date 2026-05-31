@@ -10,7 +10,6 @@ function submitTask() {
   if (!name || !duration) return;
 
   if (editingId !== null) {
-    // Mode modification
     const task = tasks.find(t => t.id === editingId);
     if (task) {
       task.name        = name;
@@ -21,9 +20,7 @@ function submitTask() {
     editingId = null;
     document.getElementById("submitBtn").textContent = "+ Ajouter";
   } else {
-    // Nouvelle tâche
-    const id = Date.now();
-    tasks.push({ id, name, duration, predecessor, successor });
+    tasks.push({ id: Date.now(), name, duration, predecessor, successor });
   }
 
   resetForm();
@@ -50,17 +47,20 @@ function editTask(id) {
 }
 
 function renderTasks() {
-  const taskList   = document.getElementById("taskList");
-  const divider    = document.getElementById("gridDivider");
+  const taskList    = document.getElementById("taskList");
+  const divider     = document.getElementById("gridDivider");
+  const actionBar   = document.getElementById("validateBar");
 
   taskList.innerHTML = "";
 
   if (tasks.length === 0) {
     divider.classList.add("hidden");
+    actionBar.classList.add("hidden");
     return;
   }
 
   divider.classList.remove("hidden");
+  actionBar.classList.remove("hidden");
 
   tasks.forEach(task => {
     const row = document.createElement("div");
@@ -68,12 +68,8 @@ function renderTasks() {
     row.setAttribute("data-id", task.id);
 
     row.innerHTML = `
-      <div class="task-cell">
-        <span>${task.name}</span>
-      </div>
-      <div class="task-cell">
-        <span>${task.duration}</span>
-      </div>
+      <div class="task-cell"><span>${task.name}</span></div>
+      <div class="task-cell"><span>${task.duration}</span></div>
       <div class="task-cell">
         <span class="${task.predecessor ? '' : 'empty'}">${task.predecessor || '—'}</span>
       </div>
@@ -90,10 +86,39 @@ function renderTasks() {
   });
 }
 
+/* --- Modale confirmation --- */
+function askClearConfirm() {
+  document.getElementById("modalOverlay").classList.remove("hidden");
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").classList.add("hidden");
+}
+
+function confirmClear() {
+  tasks = [];
+  editingId = null;
+  document.getElementById("submitBtn").textContent = "+ Ajouter";
+  resetForm();
+  renderTasks();
+  closeModal();
+}
+
+// Fermer la modale en cliquant en dehors
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("modalOverlay").addEventListener("click", function (e) {
+    if (e.target === this) closeModal();
+  });
+});
+
+function validateTasks() {
+  if (tasks.length === 0) return;
+  console.log("Tâches validées :", tasks);
+  // Prochaine étape : envoyer vers Flask
+}
+
 function resetForm() {
-  document.getElementById("taskName").value     = "";
-  document.getElementById("taskDuration").value = "";
-  document.getElementById("predecessors").value = "";
-  document.getElementById("successors").value   = "";
+  ["taskName", "taskDuration", "predecessors", "successors"]
+    .forEach(id => document.getElementById(id).value = "");
   document.getElementById("taskName").focus();
 }

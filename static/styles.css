@@ -22,7 +22,6 @@ h1 {
   color: #1a252f;
 }
 
-/* --- Section --- */
 .form-section {
   background: #ffffff;
   border-radius: 10px;
@@ -38,11 +37,7 @@ h2 {
   padding: 0.75rem 1.5rem;
 }
 
-/* ================================================
-   GRILLE PARTAGÉE
-   Formulaire et lignes de tâches utilisent
-   exactement les mêmes colonnes.
-================================================ */
+/* ── Grille partagée ── */
 .task-grid {
   display: flex;
   flex-direction: column;
@@ -55,23 +50,16 @@ h2 {
   padding: 0.75rem 1.5rem;
 }
 
-/* Ligne formulaire */
-.task-row--form {
-  padding-bottom: 1rem;
-}
+.task-row--form   { padding-bottom: 1rem; }
 
-/* Ligne de données */
 .task-row--data {
   align-items: center;
   border-top: 1px solid #eef1f4;
   transition: background 0.15s;
 }
 
-.task-row--data:hover {
-  background-color: #f5faff;
-}
+.task-row--data:hover { background-color: #f5faff; }
 
-/* --- Cellule --- */
 .task-cell {
   display: flex;
   flex-direction: column;
@@ -80,9 +68,7 @@ h2 {
   border-right: 1px solid #dce3ea;
 }
 
-.task-cell:first-child {
-  padding-left: 0;
-}
+.task-cell:first-child  { padding-left: 0; }
 
 .task-cell--actions {
   border-right: none;
@@ -92,7 +78,6 @@ h2 {
   padding-right: 0;
 }
 
-/* --- Labels --- */
 .task-cell label {
   display: flex;
   align-items: center;
@@ -116,18 +101,13 @@ h2 {
   padding: 1px 6px;
 }
 
-/* --- Valeurs affichées dans les lignes --- */
 .task-row--data .task-cell span {
   font-size: 0.9rem;
   color: #2c3e50;
-  padding: 0.1rem 0;
 }
 
-.empty {
-  color: #b0bec5 !important;
-}
+.empty { color: #b0bec5 !important; }
 
-/* --- Inputs --- */
 input[type="text"],
 input[type="number"] {
   width: 100%;
@@ -147,7 +127,6 @@ input[type="number"]:focus {
   box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.12);
 }
 
-/* --- Bouton Ajouter / Enregistrer --- */
 #submitBtn {
   padding: 0.5rem 1rem;
   background-color: #2980b9;
@@ -161,13 +140,9 @@ input[type="number"]:focus {
   transition: background-color 0.2s;
 }
 
-#submitBtn:hover {
-  background-color: #1f6391;
-}
+#submitBtn:hover { background-color: #1f6391; }
 
-/* --- Boutons actions --- */
-.btn-edit,
-.btn-delete {
+.btn-edit, .btn-delete {
   padding: 0.3rem 0.7rem;
   font-size: 0.8rem;
   font-weight: 600;
@@ -177,33 +152,160 @@ input[type="number"]:focus {
   white-space: nowrap;
 }
 
-.btn-edit {
-  color: #2980b9;
-  background: #eaf3fb;
-  border: 1px solid #aed6f1;
-}
+.btn-edit   { color: #2980b9; background: #eaf3fb; border: 1px solid #aed6f1; }
+.btn-edit:hover   { background: #aed6f1; }
+.btn-delete { color: #e74c3c; background: #fdecea; border: 1px solid #f5b7b1; }
+.btn-delete:hover { background: #f5b7b1; }
 
-.btn-edit:hover {
-  background: #aed6f1;
-}
-
-.btn-delete {
-  color: #e74c3c;
-  background: #fdecea;
-  border: 1px solid #f5b7b1;
-}
-
-.btn-delete:hover {
-  background: #f5b7b1;
-}
-
-/* --- Séparateur entre formulaire et tâches --- */
 .grid-divider {
   height: 3px;
   background: linear-gradient(to right, #2980b9, #aed6f1);
   margin: 0 1.5rem;
 }
 
-.hidden {
-  display: none;
+.hidden { display: none !important; }
+
+/* ── Barre d'actions ── */
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem 1.5rem;
+  border-top: 1px solid #dce3ea;
+  background-color: #f8fafc;
 }
+
+/* Base commune aux deux boutons */
+.btn-clear,
+.btn-validate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background-color 0.2s;
+}
+
+.btn-clear,
+.btn-validate {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-clear:hover,
+.btn-validate:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-clear:active,
+.btn-validate:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Vider — ton neutre/danger discret */
+.btn-clear {
+  color: #c0392b;
+  background-color: #fff;
+  border: 1.5px solid #e0b4b0;
+}
+
+.btn-clear:hover { background-color: #fdecea; }
+
+/* Valider — ton vert affirmé */
+.btn-validate {
+  color: #fff;
+  background-color: #27ae60;
+}
+
+.btn-validate:hover { background-color: #1e8449; }
+
+.btn-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* ── Modale de confirmation ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 25, 40, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 2rem 2.5rem;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.modal-icon {
+  font-size: 2.2rem;
+  color: #e67e22;
+  margin-bottom: 0.75rem;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a252f;
+  margin-bottom: 0.5rem;
+}
+
+.modal-message {
+  font-size: 0.88rem;
+  color: #7f8c9a;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.modal-btn {
+  padding: 0.55rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.modal-btn:active { transform: scale(0.97); }
+
+.modal-btn--cancel {
+  background: #f0f2f5;
+  color: #5d6d7e;
+}
+
+.modal-btn--cancel:hover { background: #dce3ea; }
+
+.modal-btn--confirm {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.modal-btn--confirm:hover { background: #c0392b; }

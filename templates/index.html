@@ -60,6 +60,32 @@
         <div id="taskList"></div>
 
       </div>
+      
+<div class="action-bar hidden" id="validateBar">
+        <button class="btn-clear" id="clearBtn" onclick="askClearConfirm()">
+          <span class="btn-icon">⊘</span> Vider la liste
+        </button>
+        <button class="btn-validate" id="validateBtn" onclick="validateTasks()">
+          <span class="btn-icon">✓</span> Valider les tâches
+        </button>
+      </div>
+
+    </section>
+  </div>
+
+  <!-- Modale de confirmation -->
+  <div class="modal-overlay hidden" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-icon">⚠</div>
+      <h3 class="modal-title">Vider la liste ?</h3>
+      <p class="modal-message">Toutes les tâches seront supprimées. Cette action est irréversible.</p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn--cancel" onclick="closeModal()">Annuler</button>
+        <button class="modal-btn modal-btn--confirm" onclick="confirmClear()">Oui, vider</button>
+      </div>
+    </div>
+  </div>
+
     </section>
   </div>
 
