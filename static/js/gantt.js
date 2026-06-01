@@ -1,106 +1,119 @@
 const tasks = JSON.parse(document.getElementById('tasks-data').textContent);
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof tasks !== 'undefined' && tasks.length > 0) {
-    renderAxis();
-  }
+  if (tasks.length > 0) renderAxis();
 });
 
 function renderAxis() {
-  const marginLeft   = 160;
-  const marginRight  = 50;
-  const marginTop    = 60;   // espace au-dessus de l'origine pour la flèche Y
-  const marginBottom = 50;
-  const rowHeight    = 50;
-  const yArrowLen    = 40;
-  const chartWidth   = 750;
+  const leftMargin   = 130;
+  const topMargin    = 55;  // espace pour numéros X + flèche Y
+  const rightMargin  = 50;
+  const bottomMargin = 55;  // espace pour flèche Y' + label
+  const rowHeight    = 36;
+  const yArrowExtra  = 32;
 
   const totalDuration = tasks.reduce((sum, t) => sum + parseInt(t.duration), 0);
   const maxDays       = Math.max(totalDuration, 10);
-  const chartHeight   = tasks.length * rowHeight;
 
-  const svgWidth  = marginLeft + chartWidth + marginRight;
-  const svgHeight = marginTop + chartHeight + marginBottom;
+  // Largeur d'une cellule (colonne = 1 jour)
+  const cellWidth  = Math.max(20, Math.min(38, Math.floor(800 / maxDays)));
+  const chartW     = cellWidth * maxDays;
+  const chartH     = tasks.length * rowHeight;
 
-  const originX = marginLeft;
-  const originY = marginTop;   // origine en haut à gauche
+  const svgW  = leftMargin + chartW + rightMargin;
+  const svgH  = topMargin + chartH + bottomMargin;
 
-  const scale = chartWidth / maxDays;
+  const ox = leftMargin;   // origine X
+  const oy = topMargin;    // origine Y (coin haut-gauche de la grille)
 
-  let html = '';
+  // Intervalle des graduations selon le nombre de jours
+  const tick = maxDays <= 10 ? 1 : maxDays <= 30 ? 2 : maxDays <= 60 ? 5 : 10;
 
-  // ── Axe Y (vers le haut) ──
-  html += `<line x1="${originX}" y1="${originY}" x2="${originX}" y2="${originY - yArrowLen}"
-           stroke="#2c3e50" stroke-width="1.5"/>`;
-  html += `<polygon points="${originX},${originY - yArrowLen - 8}
-           ${originX - 5},${originY - yArrowLen}
-           ${originX + 5},${originY - yArrowLen}" fill="#2c3e50"/>`;
-  html += `<text x="${originX}" y="${originY - yArrowLen - 16}"
-           text-anchor="middle" font-size="13" font-weight="bold" fill="#2c3e50">Y</text>`;
+  let s = '';
 
-  // ── Axe Y' (vers le bas — direction des tâches) ──
-  const yPrimeEnd = originY + chartHeight + 20;
-  html += `<line x1="${originX}" y1="${originY}" x2="${originX}" y2="${yPrimeEnd}"
-           stroke="#2c3e50" stroke-width="1.5"/>`;
-  html += `<polygon points="${originX},${yPrimeEnd + 8}
-           ${originX - 5},${yPrimeEnd}
-           ${originX + 5},${yPrimeEnd}" fill="#2c3e50"/>`;
-  html += `<text x="${originX}" y="${yPrimeEnd + 22}"
-           text-anchor="middle" font-size="13" font-weight="bold" fill="#2c3e50">Y'</text>`;
+  // ── Fond de grille : colonnes alternées ──────────────────────────────
+  for (let d = 0; d < maxDays; d++) {
+    const x = ox + d * cellWidth;
+    s += `<rect x="${x}" y="${oy}" width="${cellWidth}" height="${chartH}"
+          fill="${d % 2 === 0 ? '#f4f8fc' : '#ffffff'}"/>`;
+  }
 
-  // ── Axe X (vers la droite — direction du temps) ──
-  const xAxisEnd = originX + chartWidth + 20;
-  html += `<line x1="${originX}" y1="${originY}" x2="${xAxisEnd}" y2="${originY}"
-           stroke="#2c3e50" stroke-width="1.5"/>`;
-  html += `<polygon points="${xAxisEnd + 8},${originY}
-           ${xAxisEnd},${originY - 5}
-           ${xAxisEnd},${originY + 5}" fill="#2c3e50"/>`;
-  html += `<text x="${xAxisEnd + 14}" y="${originY + 4}"
-           font-size="13" font-weight="bold" fill="#2c3e50">X</text>`;
+  // ── Lignes verticales de la grille ───────────────────────────────────
+  for (let d = 0; d <= maxDays; d++) {
+    const x    = ox + d * cellWidth;
+    const main = d % tick === 0;
+    s += `<line x1="${x}" y1="${oy}" x2="${x}" y2="${oy + chartH}"
+          stroke="${main ? '#b8d0e4' : '#ddeaf3'}"
+          stroke-width="${main ? '1' : '0.5'}"/>`;
+  }
 
-  // ── Origine O ──
-  html += `<text x="${originX - 14}" y="${originY + 5}"
-           font-size="12" fill="#7f8c9a">O</text>`;
+  // ── Lignes horizontales de la grille ─────────────────────────────────
+  for (let i = 0; i <= tasks.length; i++) {
+    const y    = oy + i * rowHeight;
+    const main = true;
+    s += `<line x1="${ox}" y1="${y}" x2="${ox + chartW}" y2="${y}"
+          stroke="#b8d0e4" stroke-width="1"/>`;
+  }
 
-  // ── Graduations axe X (jours) ──
-  const tickInterval = maxDays <= 15 ? 1 : maxDays <= 40 ? 2 : maxDays <= 80 ? 5 : 10;
+  // ── Bordures extérieures de la grille ────────────────────────────────
+  s += `<rect x="${ox}" y="${oy}" width="${chartW}" height="${chartH}"
+        fill="none" stroke="#5d8aaa" stroke-width="1.5"/>`;
 
-  for (let d = 0; d <= maxDays; d += tickInterval) {
-    const x = originX + d * scale;
-    html += `<line x1="${x}" y1="${originY - 4}" x2="${x}" y2="${originY + 4}"
-             stroke="#2c3e50" stroke-width="1"/>`;
-    if (d > 0) {
-      html += `<text x="${x}" y="${originY - 9}"
-               font-size="10" fill="#7f8c9a" text-anchor="middle">${d}</text>`;
-      html += `<line x1="${x}" y1="${originY}" x2="${x}" y2="${originY + chartHeight}"
-               stroke="#eef1f4" stroke-width="1" stroke-dasharray="4,3"/>`;
+  // ── Axe X (ligne du haut, direction du temps) ────────────────────────
+  const xEnd = ox + chartW + 20;
+  s += `<line x1="${ox}" y1="${oy}" x2="${xEnd}" y2="${oy}"
+        stroke="#2c3e50" stroke-width="2"/>`;
+  s += `<polygon points="${xEnd + 9},${oy} ${xEnd},${oy - 5} ${xEnd},${oy + 5}"
+        fill="#2c3e50"/>`;
+  s += `<text x="${xEnd + 16}" y="${oy + 5}"
+        font-size="13" font-weight="bold" fill="#2c3e50" font-family="sans-serif">X</text>`;
+
+  // ── Axe Y (flèche vers le haut au-dessus de l'origine) ───────────────
+  s += `<line x1="${ox}" y1="${oy}" x2="${ox}" y2="${oy - yArrowExtra}"
+        stroke="#2c3e50" stroke-width="2"/>`;
+  s += `<polygon points="${ox},${oy - yArrowExtra - 9} ${ox - 5},${oy - yArrowExtra} ${ox + 5},${oy - yArrowExtra}"
+        fill="#2c3e50"/>`;
+  s += `<text x="${ox}" y="${oy - yArrowExtra - 16}"
+        text-anchor="middle" font-size="13" font-weight="bold" fill="#2c3e50" font-family="sans-serif">Y</text>`;
+
+  // ── Axe Y' (flèche vers le bas sous la grille) ───────────────────────
+  const yBot = oy + chartH;
+  s += `<line x1="${ox}" y1="${yBot}" x2="${ox}" y2="${yBot + 28}"
+        stroke="#2c3e50" stroke-width="2"/>`;
+  s += `<polygon points="${ox},${yBot + 37} ${ox - 5},${yBot + 28} ${ox + 5},${yBot + 28}"
+        fill="#2c3e50"/>`;
+  s += `<text x="${ox}" y="${yBot + 50}"
+        text-anchor="middle" font-size="13" font-weight="bold" fill="#2c3e50" font-family="sans-serif">Y'</text>`;
+
+  // ── Point et label Origine O ─────────────────────────────────────────
+  s += `<circle cx="${ox}" cy="${oy}" r="3" fill="#2c3e50"/>`;
+  s += `<text x="${ox - 16}" y="${oy - 10}"
+        font-size="11" fill="#5d8aaa" font-family="sans-serif">O</text>`;
+
+  // ── Numéros sur l'axe X (au-dessus de la grille) ─────────────────────
+  for (let d = 0; d <= maxDays; d++) {
+    if (d % tick === 0 && d > 0) {
+      const x = ox + d * cellWidth;
+      s += `<line x1="${x}" y1="${oy - 4}" x2="${x}" y2="${oy + 4}"
+            stroke="#2c3e50" stroke-width="1.2"/>`;
+      s += `<text x="${x}" y="${oy - 10}"
+            text-anchor="middle" font-size="11" fill="#2c3e50" font-family="sans-serif">${d}</text>`;
     }
   }
 
-  // Label axe X
-  html += `<text x="${originX + chartWidth / 2}" y="${originY + chartHeight + 40}"
-           font-size="11" fill="#7f8c9a" text-anchor="middle">Durée (jours)</text>`;
-
-  // ── Graduations axe Y' (tâches) ──
+  // ── Noms des tâches sur l'axe Y' (à gauche de chaque ligne) ──────────
   tasks.forEach((task, i) => {
-    const y = originY + (i + 1) * rowHeight;
-
-    // Trait horizontal de grille
-    html += `<line x1="${originX}" y1="${y}" x2="${originX + chartWidth}" y2="${y}"
-             stroke="#eef1f4" stroke-width="1" stroke-dasharray="4,3"/>`;
-
-    // Graduation sur Y'
-    html += `<line x1="${originX - 6}" y1="${y}" x2="${originX + 6}" y2="${y}"
-             stroke="#2c3e50" stroke-width="1"/>`;
-
-    // Nom de la tâche
-    html += `<text x="${originX - 12}" y="${y + 4}"
-             font-size="12" fill="#2c3e50" text-anchor="end">${task.name}</text>`;
+    const y = oy + i * rowHeight + rowHeight / 2;
+    s += `<line x1="${ox - 6}" y1="${y}" x2="${ox}" y2="${y}"
+          stroke="#2c3e50" stroke-width="1.2"/>`;
+    s += `<text x="${ox - 12}" y="${y + 4}"
+          text-anchor="end" font-size="12" fill="#2c3e50" font-family="sans-serif">${task.name}</text>`;
   });
 
+  // ── Rendu ─────────────────────────────────────────────────────────────
   const svg = document.getElementById('ganttAxis');
-  svg.setAttribute('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
+  svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
   svg.setAttribute('width', '100%');
-  svg.setAttribute('height', svgHeight);
-  svg.innerHTML = html;
+  svg.setAttribute('height', svgH);
+  svg.innerHTML = s;
 }

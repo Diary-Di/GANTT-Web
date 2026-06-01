@@ -14,27 +14,44 @@
 
   <div class="recap-table-wrapper">
     <table class="recap-table">
-      <thead>
+      <tbody>
+
+        <!-- Ligne : Tâche -->
         <tr>
           <th>Tâche</th>
-          <th>Durée (jours)</th>
-          <th>Tâche(s) prédécesseur(s)</th>
-          <th>Tâche(s) successeur(s)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for task in tasks %}
-        <tr>
+          {% for task in tasks %}
           <td>{{ task.name }}</td>
+          {% endfor %}
+        </tr>
+
+        <!-- Ligne : Durée -->
+        <tr>
+          <th>Durée (jours)</th>
+          {% for task in tasks %}
           <td>{{ task.duration }}</td>
+          {% endfor %}
+        </tr>
+
+        <!-- Ligne : Prédécesseur(s) -->
+        <tr>
+          <th>Tâche(s) prédécesseur(s)</th>
+          {% for task in tasks %}
           <td class="{{ 'empty' if not task.predecessor }}">
             {{ task.predecessor if task.predecessor else '—' }}
           </td>
+          {% endfor %}
+        </tr>
+
+        <!-- Ligne : Successeur(s) -->
+        <tr>
+          <th>Tâche(s) successeur(s)</th>
+          {% for task in tasks %}
           <td class="{{ 'empty' if not task.successor }}">
             {{ task.successor if task.successor else '—' }}
           </td>
+          {% endfor %}
         </tr>
-        {% endfor %}
+
       </tbody>
     </table>
   </div>
