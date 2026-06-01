@@ -1,4 +1,5 @@
 const tasks = JSON.parse(document.getElementById('tasks-data').textContent);
+const taskColors = ['#3498db','#e74c3c','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#34495e'];
 
 document.addEventListener('DOMContentLoaded', () => {
   if (tasks.length > 0) {
@@ -151,33 +152,48 @@ function renderAxis() {
   // ─────────────────────────────────────────────
   // Noms des tâches
   // ─────────────────────────────────────────────
-  tasks.forEach((task, i) => {
-    const y = oy + i * rowHeight + rowHeight / 2;
+  // Dans renderAxis(), remplace la partie des barres par :
+
+tasks.forEach((task, i) => {
+    const y = oy + i * rowHeight + 8;
+    const height = rowHeight - 16;
+
+    const startDay = parseInt(task.start) || 0;
+    const duration = parseInt(task.duration);
+
+    const x = ox + startDay * cellWidth;
+    const width = duration * cellWidth;
+
+    const color = taskColors[i % taskColors.length];
 
     s += `
-      <line
-        x1="${ox - 6}"
-        y1="${y}"
-        x2="${ox}"
-        y2="${y}"
+      <rect
+        x="${x.toFixed(1)}"
+        y="${y}"
+        width="${width.toFixed(1)}"
+        height="${height}"
+        rx="4"
+        fill="${color}"
         stroke="#2c3e50"
-        stroke-width="1.2"
+        stroke-width="2"
       />
     `;
 
-    s += `
-      <text
-        x="${ox - 12}"
-        y="${y + 4}"
-        text-anchor="end"
-        font-size="12"
-        fill="#2c3e50"
-        font-family="sans-serif"
-      >
-        ${task.name}
-      </text>
-    `;
-  });
+    // Texte sur la barre
+    const textX = x + width / 2;
+    if (width > 70) {
+      s += `
+        <text
+          x="${textX.toFixed(1)}"
+          y="${y + height/2 + 5}"
+          text-anchor="middle"
+          font-size="12.5"
+          fill="white"
+          font-weight="600"
+        >${task.name}</text>
+      `;
+    }
+});
 
   // ─────────────────────────────────────────────
   // Affichage SVG
