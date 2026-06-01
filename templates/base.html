@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Gantt{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}"/>
+  {% block styles %}{% endblock %}
+</head>
+<body>
+
+  <header class="app-header">
+    <span class="app-logo">▦</span>
+    <span class="app-title">Planificateur de tâches</span>
+  </header>
+
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  {% block scripts %}{% endblock %}
+
+  <!-- Modale de confirmation (partagée) -->
+  <div class="modal-overlay hidden" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-icon">⚠</div>
+      <h3 class="modal-title">Vider la liste ?</h3>
+      <p class="modal-message">Toutes les tâches seront supprimées. Cette action est irréversible.</p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn--cancel" onclick="closeModal()">Annuler</button>
+        <button class="modal-btn modal-btn--confirm" onclick="confirmClear()">Oui, vider</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

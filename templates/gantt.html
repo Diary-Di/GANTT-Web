@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Diagramme de Gantt{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/gantt.css') }}"/>
+{% endblock %}
+
+{% block content %}
+
+<!-- Tableau récapitulatif -->
+<section class="gantt-section">
+  <h2>Récapitulatif des tâches</h2>
+
+  <div class="recap-table-wrapper">
+    <table class="recap-table">
+      <thead>
+        <tr>
+          <th>Tâche</th>
+          <th>Durée (jours)</th>
+          <th>Tâche(s) prédécesseur(s)</th>
+          <th>Tâche(s) successeur(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for task in tasks %}
+        <tr>
+          <td>{{ task.name }}</td>
+          <td>{{ task.duration }}</td>
+          <td class="{{ 'empty' if not task.predecessor }}">
+            {{ task.predecessor if task.predecessor else '—' }}
+          </td>
+          <td class="{{ 'empty' if not task.successor }}">
+            {{ task.successor if task.successor else '—' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Barre d'action en bas du tableau -->
+  <div class="action-bar">
+    <a href="/" class="btn-edit-tasks">
+      <span class="btn-icon">✎</span> Modifier les tâches
+    </a>
+  </div>
+
+</section>
+
+<!-- Repère orthonormé -->
+<section class="gantt-section">
+  <h2>Repère des tâches</h2>
+  <div class="axis-wrapper">
+    <svg id="ganttAxis"></svg>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script id="tasks-data" type="application/json">{{ tasks | tojson }}</script>
+<script src="{{ url_for('static', filename='js/gantt.js') }}"></script>
+{% endblock %}

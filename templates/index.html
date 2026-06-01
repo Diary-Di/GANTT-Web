@@ -1,94 +1,68 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Diagramme de Gantt</title>
-  <link rel="stylesheet" href="/static/styles.css"/>
-</head>
-<body>
+{% extends "base.html" %}
 
-  <div class="container">
-    <h1>Planificateur de tâches</h1>
+{% block title %}Saisie des tâches{% endblock %}
 
-    <section class="form-section">
-      <h2>Ajouter une tâche</h2>
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}"/>
+{% endblock %}
 
-      <!-- Grille partagée : formulaire + lignes de tâches -->
-      <div class="task-grid">
+{% block content %}
+<section class="form-section">
+  <h2>Ajouter une tâche</h2>
 
-        <!-- Ligne formulaire -->
-        <div class="task-row task-row--form" id="taskForm">
+  <div class="task-grid">
 
-          <div class="task-cell">
-            <label for="taskName">Tâche</label>
-            <input type="text" id="taskName" placeholder="Nom de la tâche" required />
-          </div>
-
-          <div class="task-cell">
-            <label for="taskDuration">Durée (jours)</label>
-            <input type="number" id="taskDuration" min="1" placeholder="Ex : 5" required />
-          </div>
-
-          <div class="task-cell">
-            <label for="predecessors">
-              Tâche(s) prédécesseur(s)
-              <span class="optional">facultatif</span>
-            </label>
-            <input type="text" id="predecessors" placeholder="Ex : Conception" />
-          </div>
-
-          <div class="task-cell">
-            <label for="successors">
-              Tâche(s) successeur(s)
-              <span class="optional">facultatif</span>
-            </label>
-            <input type="text" id="successors" placeholder="Ex : Tests" />
-          </div>
-
-          <div class="task-cell task-cell--actions">
-            <label>&nbsp;</label>
-            <button id="submitBtn" onclick="submitTask()">+ Ajouter</button>
-          </div>
-
-        </div>
-
-        <!-- Séparateur entre formulaire et tâches -->
-        <div class="grid-divider hidden" id="gridDivider"></div>
-
-        <!-- Les lignes de tâches s'insèrent ici -->
-        <div id="taskList"></div>
-
+    <div class="task-row task-row--form">
+      <div class="task-cell">
+        <label for="taskName">Tâche</label>
+        <input type="text" id="taskName" placeholder="Nom de la tâche" />
       </div>
-      
-<div class="action-bar hidden" id="validateBar">
-        <button class="btn-clear" id="clearBtn" onclick="askClearConfirm()">
-          <span class="btn-icon">⊘</span> Vider la liste
-        </button>
-        <button class="btn-validate" id="validateBtn" onclick="validateTasks()">
-          <span class="btn-icon">✓</span> Valider les tâches
-        </button>
+      <div class="task-cell">
+        <label for="taskDuration">Durée (jours)</label>
+        <input type="number" id="taskDuration" min="1" placeholder="Ex : 5" />
       </div>
-
-    </section>
-  </div>
-
-  <!-- Modale de confirmation -->
-  <div class="modal-overlay hidden" id="modalOverlay">
-    <div class="modal">
-      <div class="modal-icon">⚠</div>
-      <h3 class="modal-title">Vider la liste ?</h3>
-      <p class="modal-message">Toutes les tâches seront supprimées. Cette action est irréversible.</p>
-      <div class="modal-actions">
-        <button class="modal-btn modal-btn--cancel" onclick="closeModal()">Annuler</button>
-        <button class="modal-btn modal-btn--confirm" onclick="confirmClear()">Oui, vider</button>
+      <div class="task-cell">
+        <label for="predecessors">
+          Tâche(s) prédécesseur(s)
+          <span class="optional">facultatif</span>
+        </label>
+        <input type="text" id="predecessors" placeholder="Ex : Conception" />
+      </div>
+      <div class="task-cell">
+        <label for="successors">
+          Tâche(s) successeur(s)
+          <span class="optional">facultatif</span>
+        </label>
+        <input type="text" id="successors" placeholder="Ex : Tests" />
+      </div>
+      <div class="task-cell task-cell--actions">
+        <label>&nbsp;</label>
+        <button id="submitBtn" onclick="submitTask()">+ Ajouter</button>
       </div>
     </div>
+
+    <div class="grid-divider hidden" id="gridDivider"></div>
+    <div id="taskList"></div>
+
   </div>
 
-    </section>
+  <div class="action-bar hidden" id="actionBar">
+    <button class="btn-clear" onclick="askClearConfirm()">
+      <span class="btn-icon">⊘</span> Vider la liste
+    </button>
+    <button class="btn-validate" onclick="validateTasks()">
+      <span class="btn-icon">✓</span> Valider les tâches
+    </button>
   </div>
 
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
-</html>
+</section>
+
+<!-- Formulaire caché pour soumettre les tâches à Flask -->
+<form id="ganttForm" action="/gantt" method="POST" style="display:none;">
+  <input type="hidden" id="tasksInput" name="tasks" />
+</form>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/form.js') }}"></script>
+{% endblock %}
