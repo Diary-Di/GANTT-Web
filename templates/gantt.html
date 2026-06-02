@@ -8,64 +8,84 @@
 
 {% block content %}
 
-<!-- Tableau récapitulatif -->
 <section class="gantt-section">
-  <h2>Récapitulatif des tâches</h2>
+  <h2>Diagramme de Gantt</h2>
 
-  <div class="recap-table-wrapper">
-    <table class="recap-table">
-      <tbody>
-
-        <!-- Ligne : Tâche -->
-        <tr>
-          <th>Tâche</th>
-          {% for task in tasks %}
-          <td>{{ task.name }}</td>
-          {% endfor %}
-        </tr>
-
-        <!-- Ligne : Durée -->
-        <tr>
-          <th>Durée (jours)</th>
-          {% for task in tasks %}
-          <td>{{ task.duration }}</td>
-          {% endfor %}
-        </tr>
-
-        <!-- Ligne : Prédécesseur(s) -->
-        <tr>
-          <th>Tâche(s) prédécesseur(s)</th>
-          {% for task in tasks %}
-          <td class="{{ 'empty' if not task.predecessor }}">
-            {{ task.predecessor if task.predecessor else '—' }}
-          </td>
-          {% endfor %}
-        </tr>
-
-        <!-- Ligne : Successeur(s) -->
-        <tr>
-          <th>Tâche(s) successeur(s)</th>
-          {% for task in tasks %}
-          <td class="{{ 'empty' if not task.successor }}">
-            {{ task.successor if task.successor else '—' }}
-          </td>
-          {% endfor %}
-        </tr>
-
-      </tbody>
-    </table>
+  <!-- Boutons de basculement -->
+  <div class="table-toggle">
+    <button class="toggle-btn active" data-tab="recap">Récapitulatif des tâches</button>
+    <button class="toggle-btn" data-tab="marges">Marges (Totale & Libre)</button>
   </div>
 
-  <!-- Barre d'action en bas du tableau -->
+  <!-- Tableau Récapitulatif -->
+  <div id="tab-recap" class="tab-content">
+    <div class="recap-table-wrapper">
+      <table class="recap-table">
+        <tbody>
+          <tr>
+            <th>Tâche</th>
+            {% for task in tasks %}
+            <td>{{ task.name }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <th>Durée (jours)</th>
+            {% for task in tasks %}
+            <td>{{ task.duration }}</td>
+            {% endfor %}
+          </tr>
+          <tr>
+            <th>Prédécesseur(s)</th>
+            {% for task in tasks %}
+            <td class="{{ 'empty' if not task.predecessor }}">{{ task.predecessor or '—' }}</td>
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Tableau des Marges -->
+  <div id="tab-marges" class="tab-content" style="display: none;">
+    <div class="recap-table-wrapper">
+      <table class="recap-table">
+        <thead>
+          <tr>
+            <th>Tâche</th>
+            <th>Marge Totale</th>
+            <th>Marge Libre</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for task in tasks %}
+          <tr class="{{ 'critical' if task.is_critical }}">
+            <td><strong>{{ task.name }}</strong></td>
+            <td>{{ task.slack }} jours</td>
+            <td>{{ task.free_slack }} jours</td>
+            <td>
+              {% if task.is_critical %}
+                <span class="critical-badge">Critique</span>
+              {% else %}
+                <span class="normal-badge">Normal</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Barre d'action -->
   <div class="action-bar">
     <a href="/" class="btn-edit-tasks">
       <span class="btn-icon">✎</span> Modifier les tâches
     </a>
   </div>
-
 </section>
 
-<!-- Repère orthonormé -->
+<!-- Diagramme de Gantt -->
 <section class="gantt-section">
   <h2>Repère des tâches</h2>
   <div class="axis-wrapper">
@@ -78,4 +98,21 @@
 {% block scripts %}
 <script id="tasks-data" type="application/json">{{ tasks | tojson }}</script>
 <script src="{{ url_for('static', filename='js/gantt.js') }}"></script>
+
+<script>
+// Basculement entre les tableaux
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.style.display = 'none';
+    });
+
+    const tabId = btn.getAttribute('data-tab');
+    document.getElementById(`tab-${tabId}`).style.display = 'block';
+  });
+});
+</script>
 {% endblock %}
