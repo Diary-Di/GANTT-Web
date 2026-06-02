@@ -120,6 +120,38 @@ input[type="number"]:focus {
 .btn-delete { color: #e74c3c; background: #fdecea; border: 1px solid #f5b7b1; }
 .btn-delete:hover { background: #f5b7b1; }
 
+.btn-small {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  margin-right: 0.35rem;
+}
+
+.btn-edit {
+  color: white;
+  background: #3498db;
+}
+
+.btn-edit:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+}
+
+.btn-delete {
+  color: white;
+  background: #e74c3c;
+}
+
+.btn-delete:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
+}
+
 .grid-divider {
   height: 3px;
   background: linear-gradient(to right, #2980b9, #aed6f1);

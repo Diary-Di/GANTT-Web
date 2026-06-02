@@ -79,7 +79,7 @@
 
   <!-- Barre d'action -->
   <div class="action-bar">
-    <a href="/" class="btn-edit-tasks">
+    <a href="#" class="btn-edit-tasks" onclick="editTasks(event)">
       <span class="btn-icon">✎</span> Modifier les tâches
     </a>
   </div>
@@ -97,7 +97,6 @@
       <button class="toggle-btn active" data-view="basic">1. Tâches</button>
       <button class="toggle-btn" data-view="early">2. Au plus tôt</button>
       <button class="toggle-btn" data-view="late">3. Au plus tard</button>
-      <button class="toggle-btn" data-view="slack">4. Marges Totales</button>
     </div>
   </div>
 
@@ -107,6 +106,10 @@
 
 </section>
 
+<!-- Formulaire caché pour retour en édition -->
+<form id="editForm" action="/edit" method="POST" style="display:none;">
+  <input type="hidden" id="editTasksInput" name="tasks" />
+</form>
 {% endblock %}
 
 {% block scripts %}
@@ -114,6 +117,13 @@
 <script src="{{ url_for('static', filename='js/gantt.js') }}"></script>
 
 <script>
+function editTasks(event) {
+    event.preventDefault();
+    const tasks = document.getElementById('tasks-data').textContent;
+    document.getElementById('editTasksInput').value = tasks;
+    document.getElementById('editForm').submit();
+}
+
 // ====================== BASCULEMENT TABLEAUX ======================
 document.querySelectorAll('.toggle-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {

@@ -26,18 +26,11 @@
           Tâche(s) prédécesseur(s)
           <span class="optional">facultatif</span>
         </label>
-        <input type="text" id="predecessors" placeholder="Ex : Conception" />
-      </div>
-      <div class="task-cell">
-        <label for="successors">
-          Tâche(s) successeur(s)
-          <span class="optional">facultatif</span>
-        </label>
-        <input type="text" id="successors" placeholder="Ex : Tests" />
+        <input type="text" id="predecessors" placeholder="Ex : Conception, Tests" />
       </div>
       <div class="task-cell task-cell--actions">
         <label>&nbsp;</label>
-        <button id="submitBtn" onclick="submitTask()">+ Ajouter</button>
+        <button type="button" id="submitBtn" onclick="submitTask()">+ Ajouter</button>
       </div>
     </div>
 
@@ -61,6 +54,10 @@
 <form id="ganttForm" action="/gantt" method="POST" style="display:none;">
   <input type="hidden" id="tasksInput" name="tasks" />
 </form>
+
+<script id="saved-tasks-data" type="application/json">
+  {{ tasks | default([]) | tojson }}
+</script>
 {% endblock %}
 
 {% block scripts %}
