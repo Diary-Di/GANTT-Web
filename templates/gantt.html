@@ -25,7 +25,7 @@
     </div>
   </div>
 
-  <!-- Tableau Récapitulatif -->
+  <!-- ====================== TABLEAU RÉCAPITULATIF ====================== -->
   <div id="tab-recap" class="tab-content">
     <div class="recap-table-wrapper">
       <table class="recap-table">
@@ -53,33 +53,34 @@
     </div>
   </div>
 
-  <!-- Tableau des Marges -->
+  <!-- ====================== TABLEAU DES MARGES (Format vertical) ====================== -->
   <div id="tab-marges" class="tab-content" style="display: none;">
     <div class="recap-table-wrapper">
       <table class="recap-table">
-        <thead>
+        <tbody>
+          <!-- Ligne : Tâche -->
           <tr>
             <th>Tâche</th>
-            <th>Marge Totale</th>
-            <th>Marge Libre</th>
-            <th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for task in tasks %}
-          <tr class="{{ 'critical' if task.is_critical }}">
+            {% for task in tasks %}
             <td><strong>{{ task.name }}</strong></td>
-            <td>{{ task.slack }} jours</td>
-            <td>{{ task.free_slack }} jours</td>
-            <td>
-              {% if task.is_critical %}
-                <span class="critical-badge">Critique</span>
-              {% else %}
-                <span class="normal-badge">Normal</span>
-              {% endif %}
-            </td>
+            {% endfor %}
           </tr>
-          {% endfor %}
+
+          <!-- Ligne : Marge Totale -->
+          <tr>
+            <th>Marge Totale</th>
+            {% for task in tasks %}
+            <td>{{ task.slack }} jours</td>
+            {% endfor %}
+          </tr>
+
+          <!-- Ligne : Marge Libre -->
+          <tr>
+            <th>Marge Libre</th>
+            {% for task in tasks %}
+            <td>{{ task.free_slack }} jours</td>
+            {% endfor %}
+          </tr>
         </tbody>
       </table>
     </div>
@@ -94,7 +95,7 @@
 
 </section>
 
-<!-- ==================== DIAGRAMME DE GANTT ==================== -->
+<!-- ====================== DIAGRAMME DE GANTT ====================== -->
 <section class="gantt-section">
   <h2>Diagramme de Gantt</h2>
   <div class="axis-wrapper">
@@ -112,16 +113,13 @@
 // Basculement entre les tableaux
 document.querySelectorAll('.toggle-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    // Désactive tous les boutons
     document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    // Cache tous les contenus
     document.querySelectorAll('.tab-content').forEach(tab => {
       tab.style.display = 'none';
     });
 
-    // Affiche le bon tableau
     const tabId = btn.getAttribute('data-tab');
     document.getElementById(`tab-${tabId}`).style.display = 'block';
   });
