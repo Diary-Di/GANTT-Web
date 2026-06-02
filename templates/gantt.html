@@ -8,13 +8,21 @@
 
 {% block content %}
 
+<!-- ==================== SECTION TABLEAUX ==================== -->
 <section class="gantt-section">
-  <h2>Diagramme de Gantt</h2>
-
-  <!-- Boutons de basculement -->
-  <div class="table-toggle">
-    <button class="toggle-btn active" data-tab="recap">Récapitulatif des tâches</button>
-    <button class="toggle-btn" data-tab="marges">Marges (Totale & Libre)</button>
+  
+  <!-- En-tête avec boutons de basculement -->
+  <div class="table-header">
+    <h2>Gestion des Tâches</h2>
+    
+    <div class="table-toggle">
+      <button class="toggle-btn active" data-tab="recap">
+        Récapitulatif
+      </button>
+      <button class="toggle-btn" data-tab="marges">
+        Marges (Totale & Libre)
+      </button>
+    </div>
   </div>
 
   <!-- Tableau Récapitulatif -->
@@ -83,11 +91,12 @@
       <span class="btn-icon">✎</span> Modifier les tâches
     </a>
   </div>
+
 </section>
 
-<!-- Diagramme de Gantt -->
+<!-- ==================== DIAGRAMME DE GANTT ==================== -->
 <section class="gantt-section">
-  <h2>Repère des tâches</h2>
+  <h2>Diagramme de Gantt</h2>
   <div class="axis-wrapper">
     <svg id="ganttAxis"></svg>
   </div>
@@ -103,13 +112,16 @@
 // Basculement entre les tableaux
 document.querySelectorAll('.toggle-btn').forEach(btn => {
   btn.addEventListener('click', () => {
+    // Désactive tous les boutons
     document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
+    // Cache tous les contenus
     document.querySelectorAll('.tab-content').forEach(tab => {
       tab.style.display = 'none';
     });
 
+    // Affiche le bon tableau
     const tabId = btn.getAttribute('data-tab');
     document.getElementById(`tab-${tabId}`).style.display = 'block';
   });

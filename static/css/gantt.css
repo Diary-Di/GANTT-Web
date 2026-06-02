@@ -131,3 +131,83 @@
   padding: 1.25rem 1.5rem;
   overflow-x: auto;
 }
+
+/* ====================== TABLE TOGGLE BUTTONS ====================== */
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.65rem 1.25rem;
+  background-color: #2980b9;
+  color: white;
+}
+
+.table-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: white;
+}
+
+.table-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.toggle-btn {
+  padding: 0.45rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.toggle-btn.active {
+  background: white;
+  color: #2980b9;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ====================== BADGES STATUT ====================== */
+
+.critical-badge {
+  background-color: #e74c3c;
+  color: white;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.normal-badge {
+  background-color: #27ae60;
+  color: white;
+  padding: 0.2rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* Ligne critique dans le tableau des marges */
+.recap-table tr.critical {
+  background-color: #fff0f0;
+}
+
+.recap-table tr.critical:hover {
+  background-color: #ffe6e6;
+}
