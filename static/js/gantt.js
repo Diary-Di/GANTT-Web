@@ -1,4 +1,4 @@
-// ====================== DONNÉES ======================
+// ====================== DONNÉES DES TÂCHES ======================
 const tasks = JSON.parse(document.getElementById('tasks-data').textContent);
 
 // ====================== COULEURS ======================
@@ -8,18 +8,18 @@ const taskColors = [
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (tasks.length > 0) {
-        renderAxis();
-    }
+    // Le rendu initial est déjà appelé depuis gantt.html
 });
 
-function renderAxis() {
+// ====================== FONCTION PRINCIPALE DE RENDU ======================
+function renderAxis(viewMode = 'basic') {
     const leftMargin = 130;
     const topMargin = 30;
     const rightMargin = 20;
     const bottomMargin = 20;
     const rowHeight = 36;
 
+    // Calcul des dimensions
     const totalDuration = tasks.reduce((sum, t) => sum + parseInt(t.duration), 0);
     const maxDays = Math.max(totalDuration, 10);
 
@@ -38,7 +38,9 @@ function renderAxis() {
 
     let s = '';
 
-    // Fond alterné
+    // ─────────────────────────────────────────────
+    // Fond alterné + Grille
+    // ─────────────────────────────────────────────
     for (let d = 0; d < maxDays; d++) {
         const x = ox + d * cellWidth;
         s += `<rect x="${x}" y="${oy}" width="${cellWidth}" height="${chartH}" fill="${d % 2 === 0 ? '#f8fbff' : '#ffffff'}"/>`;
@@ -57,7 +59,7 @@ function renderAxis() {
         s += `<line x1="${ox}" y1="${y}" x2="${ox + chartW}" y2="${y}" stroke="#b8d0e4" stroke-width="1"/>`;
     }
 
-    // Bordure
+    // Bordure extérieure
     s += `<rect x="${ox}" y="${oy}" width="${chartW}" height="${chartH}" fill="none" stroke="#5d8aaa" stroke-width="2"/>`;
 
     // Graduations en haut
@@ -76,76 +78,65 @@ function renderAxis() {
         s += `<text x="${ox-15}" y="${y+4}" text-anchor="end" font-size="13" fill="#2c3e50">${task.name}</text>`;
     });
 
-    // ====================== BARRES (Dates au plus tard + au plus tôt) ======================
+    // ─────────────────────────────────────────────
+    // DESSIN DES BARRES SELON LE MODE
+    // ─────────────────────────────────────────────
     tasks.forEach((task, i) => {
         const y = oy + i * rowHeight + 8;
         const height = rowHeight - 16;
 
-        const es = parseInt(task.start) || 0;           // Early Start
-        const ef = parseInt(task.end) || 0;             // Early Finish
-        const ls = parseInt(task.late_start) || 0;      // Late Start
-        const lf = parseInt(task.late_end) || 0;        // Late Finish
+        const es = parseInt(task.start) || 0;
+        const ef = parseInt(task.end) || 0;
+        const ls = parseInt(task.late_start) || 0;
+        const lf = parseInt(task.late_end) || 0;
 
         const isCritical = task.is_critical === true || task.is_critical === "true";
-
         const color = isCritical ? '#e74c3c' : taskColors[i % taskColors.length];
-        const strokeColor = isCritical ? '#c0392b' : '#263549';
 
-        // 1. Barre grise claire = Plage au plus tard (LS → LF)
-        const xLate = ox + ls * cellWidth;
-        const widthLate = (lf - ls) * cellWidth;
+        let x, width;
 
-        s += `
-          <rect
-            x="${xLate.toFixed(1)}" y="${y}"
-            width="${widthLate.toFixed(1)}" height="${height}"
-            rx="4"
-            fill="#e0e6ed"
-            stroke="#94a3b8"
-            stroke-width="1"
-          />
-        `;
+        if (viewMode === 'basic') {
+            // 1. Tâches simples
+            x = ox + es * cellWidth;
+            width = (ef - es) * cellWidth;
+            s += `<rect x="${x.toFixed(1)}" y="${y}" width="${width.toFixed(1)}" height="${height}" rx="4" fill="${color}" stroke="#263549" stroke-width="2"/>`;
 
-        // 2. Barre colorée = Dates au plus tôt (ES → EF)
-        const xEarly = ox + es * cellWidth;
-        const widthEarly = (ef - es) * cellWidth;
+        } else if (viewMode === 'early') {
+            // 2. Dates au plus tôt + mise en évidence du chemin critique
+            x = ox + es * cellWidth;
+            width = (ef - es) * cellWidth;
+            s += `<rect x="${x.toFixed(1)}" y="${y}" width="${width.toFixed(1)}" height="${height}" rx="4" fill="${color}" stroke="#263549" stroke-width="${isCritical ? '3.5' : '2'}"/>`;
 
-        s += `
-          <rect
-            x="${xEarly.toFixed(1)}" y="${y}"
-            width="${widthEarly.toFixed(1)}" height="${height}"
-            rx="4"
-            fill="${color}"
-            stroke="${strokeColor}"
-            stroke-width="${isCritical ? '3' : '2'}"
-          />
-        `;
+        } else if (viewMode === 'late') {
+            // 3. Dates au plus tard (barre grise + barre colorée)
+            const xLate = ox + ls * cellWidth;
+            const wLate = (lf - ls) * cellWidth;
+            s += `<rect x="${xLate.toFixed(1)}" y="${y}" width="${wLate.toFixed(1)}" height="${height}" rx="4" fill="#e0e6ed" stroke="#94a3b8" stroke-width="1.2"/>`;
+
+            x = ox + es * cellWidth;
+            width = (ef - es) * cellWidth;
+            s += `<rect x="${x.toFixed(1)}" y="${y}" width="${width.toFixed(1)}" height="${height}" rx="4" fill="${color}" stroke="#263549" stroke-width="2"/>`;
+
+        } else if (viewMode === 'slack') {
+            // 4. Visualisation des marges totales
+            const xLate = ox + ls * cellWidth;
+            const wLate = (lf - ls) * cellWidth;
+            s += `<rect x="${xLate.toFixed(1)}" y="${y}" width="${wLate.toFixed(1)}" height="${height}" rx="4" fill="#e0e6ed" stroke="#94a3b8" stroke-width="1.2"/>`;
+
+            x = ox + es * cellWidth;
+            width = (ef - es) * cellWidth;
+            s += `<rect x="${x.toFixed(1)}" y="${y}" width="${width.toFixed(1)}" height="${height}" rx="4" fill="${color}" stroke="#263549" stroke-width="2"/>`;
+        }
 
         // Texte sur la barre principale
-        if (widthEarly > 65) {
-            s += `
-              <text
-                x="${(xEarly + widthEarly / 2).toFixed(1)}"
-                y="${y + height / 2 + 5}"
-                text-anchor="middle"
-                font-size="12.8"
-                fill="white"
-                font-weight="${isCritical ? '700' : '600'}"
-              >${task.name}</text>
-            `;
-        } else {
-            s += `
-              <text
-                x="${(xEarly + widthEarly + 8).toFixed(1)}"
-                y="${y + height / 2 + 5}"
-                font-size="12.5"
-                fill="#2c3e50"
-              >${task.name}</text>
-            `;
+        if (width && width > 60) {
+            s += `<text x="${(x + width/2).toFixed(1)}" y="${y + height/2 + 5}" text-anchor="middle" font-size="12.8" fill="white" font-weight="600">${task.name}</text>`;
+        } else if (width) {
+            s += `<text x="${(x + width + 8).toFixed(1)}" y="${y + height/2 + 5}" font-size="12.5" fill="#2c3e50">${task.name}</text>`;
         }
     });
 
-    // ====================== AFFICHAGE SVG ======================
+    // ====================== AFFICHAGE FINAL ======================
     const svg = document.getElementById('ganttAxis');
     svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
     svg.setAttribute('width', '100%');

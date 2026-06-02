@@ -16,16 +16,12 @@
     <h2>Gestion des Tâches</h2>
     
     <div class="table-toggle">
-      <button class="toggle-btn active" data-tab="recap">
-        Récapitulatif
-      </button>
-      <button class="toggle-btn" data-tab="marges">
-        Marges (Totale & Libre)
-      </button>
+      <button class="toggle-btn active" data-tab="recap">Récapitulatif</button>
+      <button class="toggle-btn" data-tab="marges">Marges</button>
     </div>
   </div>
 
-  <!-- ====================== TABLEAU RÉCAPITULATIF ====================== -->
+  <!-- Tableau Récapitulatif -->
   <div id="tab-recap" class="tab-content">
     <div class="recap-table-wrapper">
       <table class="recap-table">
@@ -53,28 +49,23 @@
     </div>
   </div>
 
-  <!-- ====================== TABLEAU DES MARGES (Format vertical) ====================== -->
+  <!-- Tableau des Marges -->
   <div id="tab-marges" class="tab-content" style="display: none;">
     <div class="recap-table-wrapper">
       <table class="recap-table">
         <tbody>
-          <!-- Ligne : Tâche -->
           <tr>
             <th>Tâche</th>
             {% for task in tasks %}
             <td><strong>{{ task.name }}</strong></td>
             {% endfor %}
           </tr>
-
-          <!-- Ligne : Marge Totale -->
           <tr>
             <th>Marge Totale</th>
             {% for task in tasks %}
             <td>{{ task.slack }} jours</td>
             {% endfor %}
           </tr>
-
-          <!-- Ligne : Marge Libre -->
           <tr>
             <th>Marge Libre</th>
             {% for task in tasks %}
@@ -95,12 +86,25 @@
 
 </section>
 
-<!-- ====================== DIAGRAMME DE GANTT ====================== -->
+<!-- ==================== SECTION DIAGRAMME DE GANTT ==================== -->
 <section class="gantt-section">
-  <h2>Diagramme de Gantt</h2>
+  
+  <!-- En-tête avec étapes du diagramme -->
+  <div class="table-header">
+    <h2>Diagramme de Gantt</h2>
+    
+    <div class="table-toggle" id="gantt-toggle">
+      <button class="toggle-btn active" data-view="basic">1. Tâches</button>
+      <button class="toggle-btn" data-view="early">2. Au plus tôt</button>
+      <button class="toggle-btn" data-view="late">3. Au plus tard</button>
+      <button class="toggle-btn" data-view="slack">4. Marges Totales</button>
+    </div>
+  </div>
+
   <div class="axis-wrapper">
     <svg id="ganttAxis"></svg>
   </div>
+
 </section>
 
 {% endblock %}
@@ -110,10 +114,10 @@
 <script src="{{ url_for('static', filename='js/gantt.js') }}"></script>
 
 <script>
-// Basculement entre les tableaux
-document.querySelectorAll('.toggle-btn').forEach(btn => {
+// ====================== BASCULEMENT TABLEAUX ======================
+document.querySelectorAll('.toggle-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.toggle-btn[data-tab]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
     document.querySelectorAll('.tab-content').forEach(tab => {
@@ -124,5 +128,21 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
     document.getElementById(`tab-${tabId}`).style.display = 'block';
   });
 });
+
+// ====================== BASCULEMENT VUES DIAGRAMME ======================
+document.querySelectorAll('#gantt-toggle .toggle-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // Désactive tous les boutons du diagramme
+    document.querySelectorAll('#gantt-toggle .toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const viewMode = btn.getAttribute('data-view');
+    renderAxis(viewMode);
+  });
+});
+
+// Rendu initial du diagramme
+renderAxis('basic');
 </script>
+
 {% endblock %}
