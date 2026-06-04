@@ -22,7 +22,7 @@ function parsePredecessors(value) {
 
 function renderAxis(viewMode = 'basic') {
     const leftMargin = 220;
-    const topMargin = 35;        // Réduit de 65 à 35
+    const topMargin = 10;        // Réduit de 65 à 35
     const rightMargin = 50;
     const bottomMargin = 25;     // Réduit de 50 à 25
     const rowHeight = 75;
@@ -160,6 +160,6 @@ function renderAxis(viewMode = 'basic') {
     const svg = document.getElementById('ganttAxis');
     svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
     svg.setAttribute('width', '100%');
-    svg.setAttribute('height', svgH);
+    svg.setAttribute('height', Math.max(700, tasks.length * 40));
     svg.innerHTML = s;
 }

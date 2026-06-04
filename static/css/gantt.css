@@ -19,6 +19,7 @@
   padding: 0.75rem 1.25rem;
   margin: 0;
   letter-spacing: 0.02em;
+  max-width: 50px;
 }
 
 /* ============================================= */
@@ -245,7 +246,7 @@
 /* ============================================= */
 
 .axis-wrapper {
-  padding: 0.5rem 0.5rem;
+  padding: 0;
   overflow-x: auto;
   background: #f9fbfc;
   border-radius: 0 0 10px 10px;
