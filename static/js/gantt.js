@@ -100,16 +100,28 @@ function renderAxis(viewMode = 'basic') {
 
         let x, width;
 
-        if (viewMode === 'basic' || viewMode === 'early') {
-            x = ox + es * cellWidth;
-            width = (ef - es) * cellWidth;
+        // APRÈS
+if (viewMode === 'basic') {
+    x = ox + es * cellWidth;
+    width = (ef - es) * cellWidth;
 
-            s += `<rect 
-                x="${x.toFixed(1)}" y="${y}" 
-                width="${width.toFixed(1)}" height="${height}" 
-                rx="10" 
-                fill="${isCritical ? criticalColor : taskColor}" 
-                stroke="none" opacity="0.95"/>`;
+    s += `<rect 
+        x="${x.toFixed(1)}" y="${y}" 
+        width="${width.toFixed(1)}" height="${height}" 
+        rx="10" 
+        fill="${taskColor}" 
+        stroke="none" opacity="0.95"/>`;
+
+} else if (viewMode === 'early') {
+    x = ox + es * cellWidth;
+    width = (ef - es) * cellWidth;
+
+    s += `<rect 
+        x="${x.toFixed(1)}" y="${y}" 
+        width="${width.toFixed(1)}" height="${height}" 
+        rx="10" 
+        fill="${isCritical ? criticalColor : taskColor}" 
+        stroke="none" opacity="0.95"/>`;
 
         } else if (viewMode === 'late') {
             const xEarly = ox + es * cellWidth;
