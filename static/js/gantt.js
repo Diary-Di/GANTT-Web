@@ -44,8 +44,8 @@ function renderAxis(viewMode = 'basic') {
     const ox = leftMargin;
     const oy = topMargin;
 
-    const tick = maxDays <= 20 ? 1 : maxDays <= 60 ? 2 : maxDays <= 100 ? 5 : 10;
-
+    //const tick = maxDays <= 20 ? 1 : maxDays <= 60 ? 2 : maxDays <= 100 ? 5 : 10;
+    const tick = 1;
     let s = '';
 
     // Fond alterné
