@@ -100,8 +100,8 @@ function renderAxis(viewMode = 'basic') {
 
         let x, width;
 
-        const barHeight = Math.max(20, (height - 8) / 2);
-const barY = y + (height - barHeight) / 2;
+        const barHeight = Math.max(28, (height - 8) / 2);
+        const barY = y + (height - barHeight) / 2;
 
 if (viewMode === 'basic') {
     x = ox + es * cellWidth;
