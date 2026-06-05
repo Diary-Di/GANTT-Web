@@ -100,16 +100,17 @@ function renderAxis(viewMode = 'basic') {
 
         let x, width;
 
-        // APRÈS
+        const barHeight = Math.max(20, (height - 8) / 2);
+const barY = y + (height - barHeight) / 2;
+
 if (viewMode === 'basic') {
     x = ox + es * cellWidth;
     width = (ef - es) * cellWidth;
 
     s += `<rect 
-        x="${x.toFixed(1)}" y="${y}" 
-        width="${width.toFixed(1)}" height="${height}" 
-        rx="10" 
-        fill="${taskColor}" 
+        x="${x.toFixed(1)}" y="${barY.toFixed(1)}" 
+        width="${width.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+        rx="8" fill="${taskColor}" 
         stroke="none" opacity="0.95"/>`;
 
 } else if (viewMode === 'early') {
@@ -117,55 +118,53 @@ if (viewMode === 'basic') {
     width = (ef - es) * cellWidth;
 
     s += `<rect 
-        x="${x.toFixed(1)}" y="${y}" 
-        width="${width.toFixed(1)}" height="${height}" 
-        rx="10" 
-        fill="${isCritical ? criticalColor : taskColor}" 
+        x="${x.toFixed(1)}" y="${barY.toFixed(1)}" 
+        width="${width.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+        rx="8" fill="${isCritical ? criticalColor : taskColor}" 
         stroke="none" opacity="0.95"/>`;
 
-        } else if (viewMode === 'late') {
-            const xEarly = ox + es * cellWidth;
-            const widthEarly = (ef - es) * cellWidth;
-            const xLate = ox + ls * cellWidth;
-            const widthLate = (lf - ls) * cellWidth;
+} else if (viewMode === 'late') {
+    const xEarly = ox + es * cellWidth;
+    const widthEarly = (ef - es) * cellWidth;
+    const xLate = ox + ls * cellWidth;
+    const widthLate = (lf - ls) * cellWidth;
 
-            const halfHeight = Math.max(16, (height - 8) / 2);
-            const yEarly = y;
-            const yLate = y + halfHeight + 6;
+    const barY1 = y + (height - barHeight) / 2 - barHeight / 2 - 2;
+    const barY2 = y + (height - barHeight) / 2 + barHeight / 2 + 2;
 
-            s += `<rect 
-                x="${xEarly.toFixed(1)}" y="${yEarly}" 
-                width="${widthEarly.toFixed(1)}" height="${halfHeight.toFixed(1)}" 
-                rx="8" fill="${isCritical ? criticalColor : taskColor}" 
-                stroke="none" opacity="0.35"/>`;
+    s += `<rect 
+        x="${xEarly.toFixed(1)}" y="${barY1.toFixed(1)}" 
+        width="${widthEarly.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+        rx="8" fill="${isCritical ? criticalColor : taskColor}" 
+        stroke="none" opacity="0.35"/>`;
 
-            s += `<rect 
-                x="${xLate.toFixed(1)}" y="${yLate}" 
-                width="${widthLate.toFixed(1)}" height="${halfHeight.toFixed(1)}" 
-                rx="8" fill="${lateColor}" stroke="none" opacity="0.9"/>`;
+    s += `<rect 
+        x="${xLate.toFixed(1)}" y="${barY2.toFixed(1)}" 
+        width="${widthLate.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+        rx="8" fill="${lateColor}" stroke="none" opacity="0.9"/>`;
 
-        } else if (viewMode === 'slack') {
-            const xEarly = ox + es * cellWidth;
-            const widthEarly = (ef - es) * cellWidth;
+} else if (viewMode === 'slack') {
+    const xEarly = ox + es * cellWidth;
+    const widthEarly = (ef - es) * cellWidth;
 
-            const halfHeight = Math.max(16, (height - 8) / 2);
-            const yEarly = y;
+    const barY1 = y + (height - barHeight) / 2 - barHeight / 2 - 2;
+    const barY2 = y + (height - barHeight) / 2 + barHeight / 2 + 2;
 
-            s += `<rect 
-                x="${xEarly.toFixed(1)}" y="${yEarly}" 
-                width="${widthEarly.toFixed(1)}" height="${halfHeight.toFixed(1)}" 
-                rx="8" fill="${isCritical ? criticalColor : taskColor}" 
-                stroke="none" opacity="0.95"/>`;
+    s += `<rect 
+        x="${xEarly.toFixed(1)}" y="${barY1.toFixed(1)}" 
+        width="${widthEarly.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+        rx="8" fill="${isCritical ? criticalColor : taskColor}" 
+        stroke="none" opacity="0.95"/>`;
 
-            const freeSlackDays = Math.max(0, parseInt(task.free_slack) || 0);
-            if (freeSlackDays > 0) {
-                const slackX = ox + ef * cellWidth;
-                s += `<rect 
-                    x="${slackX.toFixed(1)}" y="${yEarly + halfHeight * 0.6}" 
-                    width="${(freeSlackDays * cellWidth).toFixed(1)}" height="${halfHeight * 0.8}" 
-                    rx="6" fill="${freeSlackColor}" opacity="0.55"/>`;
-            }
-        }
+    const freeSlackDays = Math.max(0, parseInt(task.free_slack) || 0);
+    if (freeSlackDays > 0) {
+        const slackX = ox + ef * cellWidth;
+        s += `<rect 
+            x="${slackX.toFixed(1)}" y="${barY2.toFixed(1)}" 
+            width="${(freeSlackDays * cellWidth).toFixed(1)}" height="${barHeight.toFixed(1)}" 
+            rx="6" fill="${freeSlackColor}" opacity="0.55"/>`;
+    }
+}
     });
 
     // ====================== AFFICHAGE FINAL ======================
