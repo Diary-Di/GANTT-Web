@@ -22,17 +22,14 @@ function parsePredecessors(value) {
 
 function renderAxis(viewMode = 'basic') {
     const leftMargin = 220;
-    const topMargin = 10;        // Réduit de 65 à 35
+    const topMargin = 10;
     const rightMargin = 50;
-    const bottomMargin = 25;     // Réduit de 50 à 25
+    const bottomMargin = 25;
     const rowHeight = 75;
 
-    // === CALCUL DE LA DURÉE RÉELLE DU PROJET ===
-    // Utiliser la date de fin maximale réelle, pas la somme des durées
     const maxEnd = Math.max(...tasks.map(t => Math.max(parseInt(t.end) || 0, parseInt(t.late_end) || 0)), 1);
-    const maxDays = maxEnd + 2;  // Ajouter 2 colonnes supplémentaires
+    const maxDays = maxEnd + 2;
 
-    // === TAILLE ADAPTÉE À LA DURÉE RÉELLE ===
     const cellWidth = Math.max(48, Math.min(75, Math.floor(1800 / maxDays)));
 
     const chartW = cellWidth * maxDays;
@@ -44,7 +41,6 @@ function renderAxis(viewMode = 'basic') {
     const ox = leftMargin;
     const oy = topMargin;
 
-    //const tick = maxDays <= 20 ? 1 : maxDays <= 60 ? 2 : maxDays <= 100 ? 5 : 10;
     const tick = 1;
     let s = '';
 
@@ -102,69 +98,65 @@ function renderAxis(viewMode = 'basic') {
 
         const barHeight = Math.max(28, (height - 8) / 2);
         const barY = y + (height - barHeight) / 2;
+        const barY1 = y + (height - barHeight) / 2 - barHeight / 2 - 2;
+        const barY2 = y + (height - barHeight) / 2 + barHeight / 2 + 2;
 
-if (viewMode === 'basic') {
-    x = ox + es * cellWidth;
-    width = (ef - es) * cellWidth;
+        if (viewMode === 'basic') {
+            x = ox + es * cellWidth;
+            width = (ef - es) * cellWidth;
 
-    s += `<rect 
-        x="${x.toFixed(1)}" y="${barY.toFixed(1)}" 
-        width="${width.toFixed(1)}" height="${barHeight.toFixed(1)}" 
-        rx="8" fill="${taskColor}" 
-        stroke="none" opacity="0.95"/>`;
+            s += `<rect 
+                x="${x.toFixed(1)}" y="${barY.toFixed(1)}" 
+                width="${width.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+                rx="8" fill="${taskColor}" 
+                stroke="none" opacity="0.95"/>`;
 
-} else if (viewMode === 'early') {
-    x = ox + es * cellWidth;
-    width = (ef - es) * cellWidth;
+        } else if (viewMode === 'early') {
+            x = ox + es * cellWidth;
+            width = (ef - es) * cellWidth;
 
-    s += `<rect 
-        x="${x.toFixed(1)}" y="${barY.toFixed(1)}" 
-        width="${width.toFixed(1)}" height="${barHeight.toFixed(1)}" 
-        rx="8" fill="${isCritical ? criticalColor : taskColor}" 
-        stroke="none" opacity="0.95"/>`;
+            s += `<rect 
+                x="${x.toFixed(1)}" y="${barY.toFixed(1)}" 
+                width="${width.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+                rx="8" fill="${isCritical ? criticalColor : taskColor}" 
+                stroke="none" opacity="0.95"/>`;
 
-} else if (viewMode === 'late') {
-    const xEarly = ox + es * cellWidth;
-    const widthEarly = (ef - es) * cellWidth;
-    const xLate = ox + ls * cellWidth;
-    const widthLate = (lf - ls) * cellWidth;
+        } else if (viewMode === 'late') {
+            const xEarly = ox + es * cellWidth;
+            const widthEarly = (ef - es) * cellWidth;
+            const xLate = ox + ls * cellWidth;
+            const widthLate = (lf - ls) * cellWidth;
 
-    const barY1 = y + (height - barHeight) / 2 - barHeight / 2 - 2;
-    const barY2 = y + (height - barHeight) / 2 + barHeight / 2 + 2;
+            s += `<rect 
+                x="${xEarly.toFixed(1)}" y="${barY1.toFixed(1)}" 
+                width="${widthEarly.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+                rx="8" fill="${isCritical ? criticalColor : taskColor}" 
+                stroke="none" opacity="0.95"/>`;
 
-    s += `<rect 
-        x="${xEarly.toFixed(1)}" y="${barY1.toFixed(1)}" 
-        width="${widthEarly.toFixed(1)}" height="${barHeight.toFixed(1)}" 
-        rx="8" fill="${isCritical ? criticalColor : taskColor}" 
-        stroke="none" opacity="0.35"/>`;
+            s += `<rect 
+                x="${xLate.toFixed(1)}" y="${barY2.toFixed(1)}" 
+                width="${widthLate.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+                rx="8" fill="${lateColor}" stroke="none" opacity="0.9"/>`;
 
-    s += `<rect 
-        x="${xLate.toFixed(1)}" y="${barY2.toFixed(1)}" 
-        width="${widthLate.toFixed(1)}" height="${barHeight.toFixed(1)}" 
-        rx="8" fill="${lateColor}" stroke="none" opacity="0.9"/>`;
+        } else if (viewMode === 'slack') {
+            const xEarly = ox + es * cellWidth;
+            const widthEarly = (ef - es) * cellWidth;
+            const xWithSlack = ox + (es + (Math.max(0, parseInt(task.free_slack) || 0))) * cellWidth;
 
-} else if (viewMode === 'slack') {
-    const xEarly = ox + es * cellWidth;
-    const widthEarly = (ef - es) * cellWidth;
+            // Barre 1 : tâche sans contraintes (position au plus tôt)
+            s += `<rect 
+                x="${xEarly.toFixed(1)}" y="${barY1.toFixed(1)}" 
+                width="${widthEarly.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+                rx="8" fill="${isCritical ? criticalColor : taskColor}" 
+                stroke="none" opacity="0.95"/>`;
 
-    const barY1 = y + (height - barHeight) / 2 - barHeight / 2 - 2;
-    const barY2 = y + (height - barHeight) / 2 + barHeight / 2 + 2;
-
-    s += `<rect 
-        x="${xEarly.toFixed(1)}" y="${barY1.toFixed(1)}" 
-        width="${widthEarly.toFixed(1)}" height="${barHeight.toFixed(1)}" 
-        rx="8" fill="${isCritical ? criticalColor : taskColor}" 
-        stroke="none" opacity="0.95"/>`;
-
-    const freeSlackDays = Math.max(0, parseInt(task.free_slack) || 0);
-    if (freeSlackDays > 0) {
-        const slackX = ox + ef * cellWidth;
-        s += `<rect 
-            x="${slackX.toFixed(1)}" y="${barY2.toFixed(1)}" 
-            width="${(freeSlackDays * cellWidth).toFixed(1)}" height="${barHeight.toFixed(1)}" 
-            rx="6" fill="${freeSlackColor}" opacity="0.55"/>`;
-    }
-}
+            // Barre 2 : tâche décalée par la marge libre
+            s += `<rect 
+                x="${xWithSlack.toFixed(1)}" y="${barY2.toFixed(1)}" 
+                width="${widthEarly.toFixed(1)}" height="${barHeight.toFixed(1)}" 
+                rx="8" fill="${freeSlackColor}" 
+                stroke="none" opacity="0.95"/>`;
+        }
     });
 
     // ====================== AFFICHAGE FINAL ======================
