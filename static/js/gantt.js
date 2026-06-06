@@ -1,14 +1,11 @@
-// ====================== DONNÉES DES TÂCHES ======================
 const tasks = JSON.parse(document.getElementById('tasks-data').textContent);
 
-// ====================== COULEURS ======================
 const taskColor = '#3498db';
 const criticalColor = '#e74c3c';
 const lateColor = '#f1c40f';
 const freeSlackColor = '#f39c12';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Rendu initial
 });
 
 function parsePredecessors(value) {
@@ -75,14 +72,12 @@ function renderAxis(viewMode = 'basic') {
         }
     }
 
-    // Noms des tâches à gauche
     tasks.forEach((task, i) => {
         const y = oy + i * rowHeight + rowHeight / 2;
         s += `<line x1="${ox-15}" y1="${y}" x2="${ox}" y2="${y}" stroke="#2c3e50" stroke-width="2"/>`;
         s += `<text x="${ox-35}" y="${y+8}" text-anchor="end" font-size="16" font-weight="600" fill="#2c3e50">${task.name}</text>`;
     });
 
-    // ====================== BARRES DES TÂCHES ======================
     tasks.forEach((task, i) => {
         const y = oy + i * rowHeight + 12;
         const height = rowHeight - 24;
