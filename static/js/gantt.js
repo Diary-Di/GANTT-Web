@@ -21,7 +21,7 @@ function renderAxis(viewMode = 'basic') {
     const leftMargin = 220;
     const topMargin = 10;
     const rightMargin = 50;
-    const bottomMargin = 25;
+    const bottomMargin = 55;
     const rowHeight = 75;
 
     const maxEnd = Math.max(...tasks.map(t => Math.max(parseInt(t.end) || 0, parseInt(t.late_end) || 0)), 1);
@@ -159,5 +159,39 @@ function renderAxis(viewMode = 'basic') {
     svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', Math.max(600, tasks.length * 40));
+
+    // ====================== LÉGENDE ======================
+const legends = {
+    basic: [
+        { color: taskColor, label: 'Tâche' }
+    ],
+    early: [
+        { color: taskColor, label: 'Tâche normale' },
+        { color: criticalColor, label: 'Tâche critique' }
+    ],
+    late: [
+        { color: taskColor, label: 'Au plus tôt' },
+        { color: criticalColor, label: 'Critique au plus tôt' },
+        { color: lateColor, label: 'Au plus tard' }
+    ],
+    slack: [
+        { color: taskColor, label: 'Tâche au plus tôt' },
+        { color: criticalColor, label: 'Tâche critique' },
+        { color: freeSlackColor, label: 'Tâche avec marge' }
+    ]
+};
+
+const legendItems = legends[viewMode] || [];
+const legendY = oy + chartH + 20;
+const itemWidth = 200;
+const totalLegendW = legendItems.length * itemWidth;
+let lx = ox + (chartW - totalLegendW) / 2;
+
+legendItems.forEach(item => {
+    s += `<rect x="${lx}" y="${legendY}" width="18" height="18" rx="4" fill="${item.color}" opacity="0.95"/>`;
+    s += `<text x="${lx + 26}" y="${legendY + 13}" font-size="14" font-weight="500" fill="#2c3e50">${item.label}</text>`;
+    lx += itemWidth;
+});
+
     svg.innerHTML = s;
 }
