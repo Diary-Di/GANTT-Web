@@ -1,1 +1,1 @@
-This is an operational research project for task management and optimization built with python and some web tech.
+Before starting the app install all needed dependecies for flask the run app.py to start the server.
