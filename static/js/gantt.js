@@ -158,6 +158,6 @@ function renderAxis(viewMode = 'basic') {
     const svg = document.getElementById('ganttAxis');
     svg.setAttribute('viewBox', `0 0 ${svgW} ${svgH}`);
     svg.setAttribute('width', '100%');
-    svg.setAttribute('height', Math.max(700, tasks.length * 40));
+    svg.setAttribute('height', Math.max(600, tasks.length * 40));
     svg.innerHTML = s;
 }

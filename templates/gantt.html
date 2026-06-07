@@ -63,13 +63,13 @@
           <tr>
             <th>Marge Totale</th>
             {% for task in tasks %}
-            <td>{{ task.slack }} jours</td>
+            <td>{{ task.slack }}</td>
             {% endfor %}
           </tr>
           <tr>
             <th>Marge Libre</th>
             {% for task in tasks %}
-            <td>{{ task.free_slack }} jours</td>
+            <td>{{ task.free_slack }}</td>
             {% endfor %}
           </tr>
         </tbody>
