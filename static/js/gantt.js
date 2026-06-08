@@ -182,14 +182,14 @@ const legends = {
 };
 
 const legendItems = legends[viewMode] || [];
-const legendY = oy + chartH + 20;
-const itemWidth = 200;
+const legendY = oy + chartH + 28;
+const itemWidth = 300;
 const totalLegendW = legendItems.length * itemWidth;
 let lx = ox + (chartW - totalLegendW) / 2;
 
 legendItems.forEach(item => {
-    s += `<rect x="${lx}" y="${legendY}" width="18" height="18" rx="4" fill="${item.color}" opacity="0.95"/>`;
-    s += `<text x="${lx + 26}" y="${legendY + 13}" font-size="14" font-weight="500" fill="#2c3e50">${item.label}</text>`;
+    s += `<rect x="${lx}" y="${legendY}" width="30" height="30" rx="6" fill="${item.color}" opacity="0.95"/>`;
+    s += `<text x="${lx + 40}" y="${legendY + 15}" text-anchor="start" dominant-baseline="middle" font-size="26" font-weight="600" fill="#2c3e50">${item.label}</text>`;
     lx += itemWidth;
 });
 
