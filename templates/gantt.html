@@ -33,7 +33,7 @@
             {% endfor %}
           </tr>
           <tr>
-            <th>Durée (jours)</th>
+            <th>Durée</th>
             {% for task in tasks %}
             <td>{{ task.duration }}</td>
             {% endfor %}
@@ -124,35 +124,57 @@ function editTasks(event) {
     document.getElementById('editForm').submit();
 }
 
+const tabButtons = document.querySelectorAll('.toggle-btn[data-tab]');
+const ganttButtons = document.querySelectorAll('#gantt-toggle .toggle-btn');
+
+function setActiveTab(tabId, syncToGantt = true) {
+  tabButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-tab') === tabId));
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.style.display = 'none';
+  });
+  document.getElementById(`tab-${tabId}`).style.display = 'block';
+
+  if (syncToGantt) {
+    if (tabId === 'marges') {
+      setActiveGanttView('slack', false);
+    } else if (tabId === 'recap') {
+      setActiveGanttView('basic', false);
+    }
+  }
+}
+
+function setActiveGanttView(viewMode, syncToTab = true) {
+  ganttButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-view') === viewMode));
+  renderAxis(viewMode);
+
+  if (syncToTab) {
+    if (viewMode === 'slack') {
+      setActiveTab('marges', false);
+    } else if (viewMode === 'basic') {
+      setActiveTab('recap', false);
+    }
+  }
+}
+
 // ====================== BASCULEMENT TABLEAUX ======================
-document.querySelectorAll('.toggle-btn[data-tab]').forEach(btn => {
+tabButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.toggle-btn[data-tab]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    document.querySelectorAll('.tab-content').forEach(tab => {
-      tab.style.display = 'none';
-    });
-
     const tabId = btn.getAttribute('data-tab');
-    document.getElementById(`tab-${tabId}`).style.display = 'block';
+    setActiveTab(tabId);
   });
 });
 
 // ====================== BASCULEMENT VUES DIAGRAMME ======================
-document.querySelectorAll('#gantt-toggle .toggle-btn').forEach(btn => {
+ganttButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    // Désactive tous les boutons du diagramme
-    document.querySelectorAll('#gantt-toggle .toggle-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
     const viewMode = btn.getAttribute('data-view');
-    renderAxis(viewMode);
+    setActiveGanttView(viewMode);
   });
 });
 
 // Rendu initial du diagramme
-renderAxis('basic');
+setActiveTab('recap', false);
+setActiveGanttView('basic', false);
 </script>
 
 {% endblock %}

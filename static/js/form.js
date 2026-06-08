@@ -115,7 +115,7 @@ function renderTaskList() {
 
         taskRow.innerHTML = `
             <div class="task-cell"><strong>${task.name}</strong></div>
-            <div class="task-cell">${task.duration} jours</div>
+            <div class="task-cell">${task.duration}</div>
             <div class="task-cell">${task.predecessor || '—'}</div>
             <div class="task-cell task-cell--actions">
                 <button class="btn-small btn-edit" type="button" onclick="editTask(${task.id})">✎ Modifier</button>
