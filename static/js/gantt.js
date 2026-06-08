@@ -142,7 +142,7 @@ function renderAxis(viewMode = 'basic') {
             s += `<rect 
                 x="${xEarly.toFixed(1)}" y="${barY1.toFixed(1)}" 
                 width="${widthEarly.toFixed(1)}" height="${barHeight.toFixed(1)}" 
-                rx="8" fill="${isCritical ? criticalColor : taskColor}" 
+                rx="8" fill="${taskColor}" 
                 stroke="none" opacity="0.95"/>`;
 
             // Barre 2 : tâche décalée par la marge libre
@@ -176,7 +176,6 @@ const legends = {
     ],
     slack: [
         { color: taskColor, label: 'Tâche au plus tôt' },
-        { color: criticalColor, label: 'Tâche critique' },
         { color: freeSlackColor, label: 'Tâche avec marge' }
     ]
 };
